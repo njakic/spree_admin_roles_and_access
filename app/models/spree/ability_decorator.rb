@@ -1,6 +1,5 @@
 module Spree
   Ability.class_eval do
-
     def initialize(user)
       self.clear_aliased_actions
 
@@ -10,14 +9,14 @@ module Spree
       alias_action :show, :to => :read
       alias_action :delete, :to => :destroy
 
-      user ||= Spree::User.new
+      user ||= Spree.user_class.new
 
       user_roles(user).each do |role|
         ability(role, user)
       end
 
-      Ability.abilities.each do |clazz|
-        ability = clazz.send(:new, user)
+      Ability.abilities.each do |klass|
+        ability = klass.send(:new, user)
         @rules = rules + ability.send(:rules)
       end
     end
